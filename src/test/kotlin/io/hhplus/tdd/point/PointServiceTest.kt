@@ -3,6 +3,7 @@ package io.hhplus.tdd.point
 import io.hhplus.tdd.database.UserPointTable
 import io.hhplus.tdd.point.command.ChargePoint
 import io.hhplus.tdd.point.command.PointAmount
+import io.hhplus.tdd.point.command.UsePoint
 import io.mockk.coEvery
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
@@ -61,7 +62,7 @@ class PointServiceTest {
 
         @Test
         fun `반환된 포인트는 충전된 결과이다`() {
-            val userPoint = PointMock.userPoint()
+            val userPoint = PointMock.userPoint(10L)
             val id = userPoint.id
             val command = ChargePoint(id, PointAmount(20L))
             val returnPoint = PointMock.userPoint()
@@ -74,10 +75,56 @@ class PointServiceTest {
         }
 
         @Test
-        fun `합산된 포인트가 최대 포인트를 초과할 경우 에러가 발생한다`() {
+        fun `합산된 포인트가 최대 포인트를 초과할 경우 IllegalArgumentException가 발생한다`() {
             val userPoint = PointMock.userPoint(point = PointAmount.MAX_POINT)
             val id = userPoint.id
             val command = ChargePoint(id, PointAmount(20L))
+            coEvery { service.getPoint(id) } returns userPoint
+
+            assertThrows<IllegalArgumentException> {
+                service.handle(command)
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("포인트 사용")
+    inner class UsePointTest {
+        @Test
+        fun `전달 받은 id로 유저의 포인트를 조회해 포인트를 삭감해 저장한다`() {
+            val userPoint = PointMock.userPoint(point = 30L)
+            val id = userPoint.id
+            val command = UsePoint(id, PointAmount(10L))
+            val expectPoint = 20L
+            coEvery { service.getPoint(id) } returns userPoint
+
+            service.handle(command)
+
+            verify {
+                table.selectById(id)
+                table.insertOrUpdate(id, expectPoint)
+            }
+        }
+
+        @Test
+        fun `반환된 포인트는 차감된 결과이다`() {
+            val userPoint = PointMock.userPoint(point = 20L)
+            val id = userPoint.id
+            val command = UsePoint(id, PointAmount(10L))
+            val returnPoint = PointMock.userPoint()
+            coEvery { service.getPoint(id) } returns userPoint
+            coEvery { table.insertOrUpdate(id, any()) } returns returnPoint
+
+            val result = service.handle(command)
+
+            assertThat(result).isEqualTo(returnPoint)
+        }
+
+        @Test
+        fun `차감 후의 포인트가 0보다 작을 경우 IllegalArgumentException가 발생한다`() {
+            val userPoint = PointMock.userPoint(point = 10L)
+            val id = userPoint.id
+            val command = UsePoint(id, PointAmount(20L))
             coEvery { service.getPoint(id) } returns userPoint
 
             assertThrows<IllegalArgumentException> {

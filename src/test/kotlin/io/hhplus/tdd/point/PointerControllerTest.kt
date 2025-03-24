@@ -58,7 +58,7 @@ class PointerControllerTest {
 
     @Nested
     @DisplayName("포인트 충전")
-    inner class ChargeTest{
+    inner class ChargePointTest{
         @Test
         fun `전달 받은 id와 포인트로 해당 유저의 포인트를 충전해, 결과를 반환한다`() {
             val id = 1L
@@ -69,6 +69,23 @@ class PointerControllerTest {
             val result = controller.charge(id = id, amount)
 
             verify { pointTransactionManager.charge(id, amount) } 
+            assertThat(result).isEqualTo(userPoint)
+        }
+    }
+
+    @Nested
+    @DisplayName("포인트 사용")
+    inner class UsePointTest{
+        @Test
+        fun `전달 받은 id와 포인트로 해당 유저의 포인트를 사용한 후, 결과를 반환한다`() {
+            val id = 1L
+            val amount = 100L
+            val userPoint = PointMock.userPoint()
+            coEvery { pointTransactionManager.use(id, amount) } returns userPoint
+
+            val result = controller.use(id = id, amount)
+
+            verify { pointTransactionManager.use(id, amount) }
             assertThat(result).isEqualTo(userPoint)
         }
     }
