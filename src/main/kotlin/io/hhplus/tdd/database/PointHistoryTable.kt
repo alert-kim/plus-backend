@@ -13,7 +13,7 @@ class PointHistoryTable {
     private var cursor: Long = 1L
 
     fun insert(
-        id: Long,
+        userId: Long,
         amount: Long,
         transactionType: TransactionType,
         updateMillis: Long,
@@ -21,7 +21,7 @@ class PointHistoryTable {
         Thread.sleep(Math.random().toLong() * 300L)
         val history = PointHistory(
             id = cursor++,
-            userId = id,
+            userId = userId,
             amount = amount,
             type = transactionType,
             timeMillis = updateMillis,
