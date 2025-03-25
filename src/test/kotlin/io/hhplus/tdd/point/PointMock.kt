@@ -1,11 +1,17 @@
 package io.hhplus.tdd.point
 
+import io.hhplus.tdd.point.command.PointAmount
+
 object PointMock {
     fun userPoint(
         id: Long = (0L..10L).random(),
         point: Long = (0..10L).random(),
         updateMillis: Long = System.currentTimeMillis()
     ): UserPoint = UserPoint(id, point, updateMillis)
+
+    fun pointAmount(
+        value: Long = (0..10L).random()
+    ): PointAmount = PointAmount(value)
 
     fun pointHistory(
         id: Long = (0L..10L).random(),
