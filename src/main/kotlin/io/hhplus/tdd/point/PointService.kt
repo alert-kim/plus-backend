@@ -21,7 +21,7 @@ class PointService(
 
     fun handle(command: UsePoint): UserPoint {
         val userPoint = table.selectById(command.userId)
-        val totalAmount =(userPoint.point - command.amount.value).also { it.verifyAmount() }
+        val totalAmount = (userPoint.point - command.amount.value).also { it.verifyAmount() }
         return table.insertOrUpdate(command.userId, totalAmount)
     }
 
