@@ -4,7 +4,6 @@ import io.hhplus.tdd.point.command.ChargePoint
 import io.hhplus.tdd.point.command.CreateHistory
 import io.hhplus.tdd.point.command.PointAmount
 import io.hhplus.tdd.point.command.UsePoint
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK

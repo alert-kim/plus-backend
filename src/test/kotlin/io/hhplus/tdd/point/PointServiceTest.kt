@@ -4,17 +4,13 @@ import io.hhplus.tdd.database.UserPointTable
 import io.hhplus.tdd.point.command.ChargePoint
 import io.hhplus.tdd.point.command.PointAmount
 import io.hhplus.tdd.point.command.UsePoint
-import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import io.mockk.verifyOrder
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
@@ -22,8 +18,18 @@ class PointServiceTest {
     @MockK(relaxed = true)
     private lateinit var table: UserPointTable
 
+    @MockK(relaxed = true)
+    private lateinit var accessor: PointAccessor
+
     @InjectMockKs
     private lateinit var service: PointService
+
+    @BeforeEach
+    fun setUp() {
+        every { accessor.withLock<UserPoint>(any<Long>(), any()) } coAnswers {
+            secondArg<() -> UserPoint>().invoke()
+        }
+    }
 
     @Nested
     @DisplayName("포인트 조회")
@@ -32,7 +38,7 @@ class PointServiceTest {
         fun `전달 받은 id로 유저의 포인트를 조회해 반환한다`() {
             val id = (1L..10L).random()
             val userPoint = UserPoint(id = id, point = (0L..10L).random(), updateMillis = System.currentTimeMillis())
-            coEvery { service.getPoint(id) } returns userPoint
+            every { service.getPoint(id) } returns userPoint
 
             val result = service.getPoint(id)
 
@@ -50,7 +56,7 @@ class PointServiceTest {
             val id = userPoint.id
             val command = ChargePoint(id, PointAmount(20L))
             val expectPoint = 30L
-            coEvery { service.getPoint(id) } returns userPoint
+            every { service.getPoint(id) } returns userPoint
 
             service.handle(command)
 
@@ -66,8 +72,8 @@ class PointServiceTest {
             val id = userPoint.id
             val command = ChargePoint(id, PointAmount(20L))
             val returnPoint = PointMock.userPoint()
-            coEvery { service.getPoint(id) } returns userPoint
-            coEvery { table.insertOrUpdate(id, any()) } returns returnPoint
+            every { service.getPoint(id) } returns userPoint
+            every { table.insertOrUpdate(id, any()) } returns returnPoint
 
             val result = service.handle(command)
 
@@ -79,7 +85,7 @@ class PointServiceTest {
             val userPoint = PointMock.userPoint(point = PointAmount.MAX_POINT)
             val id = userPoint.id
             val command = ChargePoint(id, PointAmount(20L))
-            coEvery { service.getPoint(id) } returns userPoint
+            every { service.getPoint(id) } returns userPoint
 
             assertThrows<IllegalArgumentException> {
                 service.handle(command)
@@ -96,7 +102,7 @@ class PointServiceTest {
             val id = userPoint.id
             val command = UsePoint(id, PointAmount(10L))
             val expectPoint = 20L
-            coEvery { service.getPoint(id) } returns userPoint
+            every { service.getPoint(id) } returns userPoint
 
             service.handle(command)
 
@@ -112,8 +118,8 @@ class PointServiceTest {
             val id = userPoint.id
             val command = UsePoint(id, PointAmount(10L))
             val returnPoint = PointMock.userPoint()
-            coEvery { service.getPoint(id) } returns userPoint
-            coEvery { table.insertOrUpdate(id, any()) } returns returnPoint
+            every { service.getPoint(id) } returns userPoint
+            every { table.insertOrUpdate(id, any()) } returns returnPoint
 
             val result = service.handle(command)
 
@@ -125,7 +131,7 @@ class PointServiceTest {
             val userPoint = PointMock.userPoint(point = 10L)
             val id = userPoint.id
             val command = UsePoint(id, PointAmount(20L))
-            coEvery { service.getPoint(id) } returns userPoint
+            every { service.getPoint(id) } returns userPoint
 
             assertThrows<IllegalArgumentException> {
                 service.handle(command)

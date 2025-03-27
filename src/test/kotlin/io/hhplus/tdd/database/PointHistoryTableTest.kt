@@ -41,10 +41,10 @@ class PointHistoryTableTest {
             val table = PointHistoryTable()
             val userId = 1L
             val historyIdsInOrder =
-            List(3) {
-                val historyId = table.insert(userId, 100, TransactionType.CHARGE, System.currentTimeMillis()).id
-                historyId
-            }
+                List(3) {
+                    val historyId = table.insert(userId, 100, TransactionType.CHARGE, System.currentTimeMillis()).id
+                    historyId
+                }
 
             val result = table.selectAllByUserId(userId)
 

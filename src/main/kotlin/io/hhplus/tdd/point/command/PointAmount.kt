@@ -1,11 +1,11 @@
 package io.hhplus.tdd.point.command
 
 @JvmInline
-value class PointAmount (
+value class PointAmount(
     val value: Long,
 ) {
     init {
-        require(value in 0..MAX_POINT) { "point amount must be in range 0 to $MAX_POINT" }
+        require(value in 0..MAX_POINT) { "point amount must be in range 0 to $MAX_POINT but: $value" }
     }
 
     companion object {

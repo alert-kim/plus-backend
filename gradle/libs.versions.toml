@@ -1,6 +1,7 @@
 [versions]
 kotlin = "1.9.21"
 ktlint_plugin = "11.6.1"
+kotlin-coroutine = "1.8.1"
 
 spring_boot = "3.2.0"
 spring_cloud_dependencies = "2023.0.0"
@@ -26,6 +27,9 @@ ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint_plugin" }
 spring_boot = { id = "org.springframework.boot", version.ref = "spring_boot" }
 spring_dependency_management = { id = "io.spring.dependency-management", version.ref = "spring_io_dependency_management" }
 [libraries]
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutine" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin-coroutine" }
+
 spring_context = { module = "org.springframework:spring-context" }
 spring_cloud_dependencies = { module = "org.springframework.cloud:spring-cloud-dependencies", version.ref = "spring_cloud_dependencies" }
 spring_boot_dependencies = { module = "org.springframework.boot:spring-boot-dependencies" }
