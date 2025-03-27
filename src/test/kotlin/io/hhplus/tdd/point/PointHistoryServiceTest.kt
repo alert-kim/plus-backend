@@ -2,7 +2,7 @@ package io.hhplus.tdd.point
 
 import io.hhplus.tdd.database.PointHistoryTable
 import io.hhplus.tdd.point.command.CreateHistory
-import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -29,7 +29,7 @@ class PointHistoryServiceTest {
             val history = PointMock.pointHistory()
             val userHistories = listOf(history)
             val userId = history.userId
-            coEvery { table.selectAllByUserId(userId) } returns userHistories
+            every { table.selectAllByUserId(userId) } returns userHistories
 
             val result = service.getAllByUser(userId)
 

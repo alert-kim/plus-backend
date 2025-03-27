@@ -81,7 +81,7 @@ class PointIntegrationTest @Autowired constructor(
 
     @Nested
     @DisplayName("포인트 충전")
-    inner class ChargePointTest{
+    inner class ChargePointTest {
         @Test
         fun `포인트가 저장된 유저가 포인트 충전시 포인트가 합산됨`() {
             val userId = 1L
@@ -141,7 +141,7 @@ class PointIntegrationTest @Autowired constructor(
 
     @Nested
     @DisplayName("포인트 사용")
-    inner class UsePointTest{
+    inner class UsePointTest {
         @Test
         fun `포인트가 저장된 유저가 포인트 사용시 포인트가 차감됨`() {
             val userId = 1L

@@ -1,7 +1,7 @@
 package io.hhplus.tdd.point.command
 
 @JvmInline
-value class PointAmount (
+value class PointAmount(
     val value: Long,
 ) {
     init {
