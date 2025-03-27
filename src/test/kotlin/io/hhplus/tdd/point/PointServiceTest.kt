@@ -5,12 +5,15 @@ import io.hhplus.tdd.point.command.ChargePoint
 import io.hhplus.tdd.point.command.PointAmount
 import io.hhplus.tdd.point.command.UsePoint
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -22,8 +25,18 @@ class PointServiceTest {
     @MockK(relaxed = true)
     private lateinit var table: UserPointTable
 
+    @MockK(relaxed = true)
+    private lateinit var accessor: PointAccessor
+
     @InjectMockKs
     private lateinit var service: PointService
+
+    @BeforeEach
+    fun setUp() {
+        coEvery { accessor.withLock<UserPoint>(any<Long>(), any()) } coAnswers {
+            secondArg<() -> UserPoint>().invoke()
+        }
+    }
 
     @Nested
     @DisplayName("포인트 조회")
