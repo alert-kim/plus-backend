@@ -1,6 +1,6 @@
 package io.hhplus.tdd.point.command
 
-data class ChargePoint (
+data class ChargePoint(
     val userId: Long,
     val amount: PointAmount,
 )
